@@ -1315,6 +1315,22 @@ const MASCOT_S = {
 // ─────────────────────────────────────────────
 // GEMS  (gacha rewards, one per challenge – 5 types cycling)
 // ─────────────────────────────────────────────
+// Průvodci – zvíře pro každý úkol (viditelné od začátku)
+const ANIMALS = [
+  ['🐢','🦊','🦁','🐧','🦋'],  // Hračky a hry
+  ['🦉','🐬','🐸','🦔','🐨'],  // Domácnost
+  ['🦜','🦙','🐘','🦒','🐼'],  // Škola a věda
+  ['🐝','🦔','🦋','🐸','🐿️'], // Příroda
+  ['🦎','🐙','🦘','🦡','🦦'],  // Technika
+];
+const ANIMAL_NAMES = [
+  ['Želvička','Liška','Lev','Tučňák','Motýl'],
+  ['Sova','Delfín','Žabák','Ježek','Koala'],
+  ['Papoušek','Lama','Slon','Žirafa','Panda'],
+  ['Včelka','Ježek','Motýl','Žabák','Veverka'],
+  ['Ještěrka','Chobotnice','Klokan','Jezevec','Vydra'],
+];
+
 const GUIDE_INTROS = [
   ['Pojď prozkoumat, jaký materiál je pro hračku nejlepší!',
    'Jak udělat povrch co nejhladší? Zkusme to zjistit.',
@@ -1654,6 +1670,10 @@ function loadChallenge() {
   document.querySelectorAll('.opt-btn').forEach(b => b.classList.remove('sel'));
   document.getElementById('mat-fact').classList.remove('show');
   // reset checklist chips
+  ['mat','infill','speed'].forEach(k => {
+    const chip = document.getElementById('chip-' + k);
+    if (chip) { chip.classList.remove('done'); chip.querySelector('.chip-check').textContent = '○'; }
+  });
 
   document.getElementById('result-card').style.display = 'none';
   document.getElementById('result-card').classList.remove('show');
@@ -1827,6 +1847,24 @@ const MASCOT_SVG = {
   <line x1="51" y1="33" x2="56" y2="38" stroke="#16a34a" stroke-width="2.5" stroke-linecap="round"/>
 </svg>`,
   ok:       `<svg width="56" height="66" viewBox="0 0 60 70" xmlns="http://www.w3.org/2000/svg">
+  <ellipse cx="30" cy="44" rx="22" ry="24" fill="#a3e635"/>
+  <ellipse cx="30" cy="44" rx="16" ry="18" fill="none" stroke="#65a30d" stroke-width="1.5" opacity=".5"/>
+  <ellipse cx="30" cy="44" rx="10" ry="12" fill="none" stroke="#65a30d" stroke-width="1.2" opacity=".4"/>
+  <path d="M22,66 Q20,70 18,68" stroke="#65a30d" stroke-width="1.5" fill="none" stroke-linecap="round"/>
+  <path d="M30,67 Q30,72 30,70" stroke="#65a30d" stroke-width="1.5" fill="none" stroke-linecap="round"/>
+  <path d="M38,66 Q40,70 42,68" stroke="#65a30d" stroke-width="1.5" fill="none" stroke-linecap="round"/>
+  <path d="M30,20 Q28,10 26,6" stroke="#4d7c0f" stroke-width="2.5" fill="none" stroke-linecap="round"/>
+  <path d="M30,20 Q32,12 35,8" stroke="#4d7c0f" stroke-width="2" fill="none" stroke-linecap="round"/>
+  
+  <circle cx="24" cy="40" r="4" fill="#1c3829"/>
+  <circle cx="36" cy="40" r="4" fill="#1c3829"/>
+  <circle cx="25.5" cy="38.5" r="1.3" fill="white"/>
+  <circle cx="37.5" cy="38.5" r="1.3" fill="white"/>
+  <ellipse cx="30" cy="51" rx="3.5" ry="3" fill="#1c3829"/>
+  <circle cx="46" cy="28" r="7" fill="none" stroke="#16a34a" stroke-width="2.5"/>
+  <line x1="51" y1="33" x2="56" y2="38" stroke="#16a34a" stroke-width="2.5" stroke-linecap="round"/>
+</svg>`,
+  curious:  `<svg width="56" height="66" viewBox="0 0 60 70" xmlns="http://www.w3.org/2000/svg">
   <ellipse cx="30" cy="44" rx="22" ry="24" fill="#a3e635"/>
   <ellipse cx="30" cy="44" rx="16" ry="18" fill="none" stroke="#65a30d" stroke-width="1.5" opacity=".5"/>
   <ellipse cx="30" cy="44" rx="10" ry="12" fill="none" stroke="#65a30d" stroke-width="1.2" opacity=".4"/>
@@ -2053,7 +2091,7 @@ function showResult() {
   const score = good / keys.length;
   let title, mascotS;
   // Všechny výsledky stejný tón – žádná hierarchie
-  title   = 'Tady je, co jsi zjistit:';
+  title   = 'Tady je, co jsi zjistil/a:';
   mascotS = 'curious';
 
   const rt = document.getElementById('result-title');
@@ -2120,7 +2158,7 @@ function retry() {
 
   const pb = document.getElementById('print-btn');
   pb.textContent = '🖨️ TISKNOUT!';
-  pb.disabled = true;
+  pb.disabled = false;
   pb.classList.remove('ready');
   pb.onclick = startPrint;
   updateStats();
