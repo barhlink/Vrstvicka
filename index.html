@@ -155,6 +155,15 @@ header p {
 .print-btn:disabled { background:#e5e7eb; color:#9ca3af; box-shadow:0 5px 0 #d1d5db; cursor:not-allowed; }
 
 /* ── PRINTER ── */
+.stop-btn {
+  padding: 4px 12px; min-height: 32px; font-family: inherit;
+  font-size: .72rem; font-weight: 800; border: none;
+  border-radius: var(--radius-xs); cursor: pointer;
+  background: #fef2f2; color: #b91c1c;
+  border: 1.5px solid #fecaca; transition: all .15s;
+}
+.stop-btn:hover { background: #fee2e2; border-color: #f87171; }
+
 .printer-card { grid-column:span 2; }
 @media (max-width:700px) { .printer-card { grid-column:span 1; } }
 .printer-scene { display:flex; gap:16px; align-items:flex-start; flex-wrap:wrap; }
@@ -194,6 +203,66 @@ header p {
 .fb-grid { display:flex; flex-wrap:wrap; gap:8px; justify-content:center; margin-bottom:16px; }
 .fb-card { background:white; border-radius:var(--radius-sm); padding:10px 14px; font-size:.82rem; font-weight:700; border-left:4px solid; width:100%; max-width:340px; text-align:left; box-shadow:0 2px 8px rgba(0,0,0,.06); line-height:1.5; }
 .fb-card { border-color:#cbd5e1; background:#f8fafc; color:var(--dark); }
+
+
+
+/* ── HYPOTÉZA CHIPS ── */
+.hyp-chips { display: flex; gap: 6px; flex-wrap: wrap; margin-top: 4px; }
+.hyp-chip {
+  padding: 8px 12px; border-radius: 20px; font-family: inherit;
+  font-size: .78rem; font-weight: 700; cursor: pointer; min-height: 44px;
+  border: 1.5px solid var(--sky-b); background: var(--sky);
+  color: #0369a1; transition: all .15s; display: flex; align-items: center; gap: 5px;
+}
+.hyp-chip:hover { border-color: #0369a1; }
+.hyp-chip.sel { background: #0369a1; color: white; border-color: #0369a1; }
+
+/* ── REFLEXE EMOJI ── */
+.reflex-emojis { display: flex; gap: 8px; flex-wrap: wrap; margin-top: 6px; }
+.reflex-emoji-btn {
+  padding: 8px 14px; border-radius: 20px; font-family: inherit;
+  font-size: .82rem; font-weight: 700; cursor: pointer; min-height: 44px;
+  border: 1.5px solid var(--g4); background: white;
+  color: var(--dark); transition: all .15s; display: flex; align-items: center; gap: 6px;
+}
+.reflex-emoji-btn:hover { border-color: var(--g2); background: var(--g5); }
+.reflex-emoji-btn.sel { background: var(--g5); border-color: var(--g1); color: var(--dark); box-shadow: 0 0 0 2px var(--g1); }
+
+/* ── ODKRÝT ŘEŠENÍ ── */
+.reveal-btn {
+  background: none; border: 1.5px dashed var(--g3);
+  border-radius: var(--radius-xs); padding: 6px 12px;
+  font-family: inherit; font-size: .74rem; font-weight: 800;
+  color: var(--g1); cursor: pointer; transition: all .15s;
+  min-height: 44px; width: 100%;
+}
+.reveal-btn:hover { background: var(--g5); border-style: solid; }
+
+/* ── NÁLEPKA IDEÁLNÍ KOMBINACE ── */
+.ideal-badge {
+  margin-top: 12px; border-radius: var(--radius-sm);
+  border: 2px solid var(--g3); background: linear-gradient(135deg, var(--dark), #166534);
+  padding: 12px 16px; color: white;
+  display: flex; align-items: flex-start; gap: 10px;
+}
+.ideal-badge-icon {
+  flex-shrink: 0; font-size: 1.8rem; line-height: 1;
+}
+.ideal-badge-body {}
+.ideal-badge-label {
+  font-size: .6rem; font-weight: 900; text-transform: uppercase;
+  letter-spacing: .12em; color: var(--g3); margin-bottom: 5px;
+}
+.ideal-badge-rows { display: flex; flex-direction: column; gap: 3px; }
+.ideal-badge-row {
+  font-size: .8rem; font-weight: 700; color: white;
+  display: flex; align-items: center; gap: 6px;
+}
+.ideal-badge-why {
+  font-size: .72rem; font-weight: 600; color: rgba(187,247,208,.75);
+  margin-top: 6px; line-height: 1.5;
+}
+
 .next-btn { padding:13px 32px; min-height:44px; font-family:inherit; font-size:.95rem; font-weight:900; border:none; border-radius:var(--radius-sm); cursor:pointer; background:linear-gradient(135deg,var(--g1),var(--g2)); color:white; box-shadow:0 5px 0 var(--dark); transition:all .15s; margin-top:20px; }
 .next-btn:hover { transform:translateY(-2px); box-shadow:0 7px 0 var(--dark); }
 
@@ -635,11 +704,16 @@ header p {
     </div>
     <div class="hypothesis-wrap">
       <div class="hypothesis-label">💭 Co myslíš, že se stane?</div>
-      <textarea class="hypothesis-input" id="hypothesis" rows="2" placeholder="Napiš svoji hypotézu – žádná odpověď není špatná…"></textarea>
+      <div class="hyp-chips" id="hyp-chips">
+        <button class="hyp-chip" data-val="🎯 Bude to fungovat" onclick="pickHyp(this)">🎯 Bude to fungovat</button>
+        <button class="hyp-chip" data-val="🤔 Nejsem si jistý/á" onclick="pickHyp(this)">🤔 Nejsem si jistý/á</button>
+        <button class="hyp-chip" data-val="💡 Zkouším, co se stane" onclick="pickHyp(this)">💡 Zkouším, co se stane</button>
+      </div>
+      <input type="hidden" id="hypothesis" value="">
     </div>
 
   <label class="anim-toggle">
-    <input type="checkbox" id="anim-checkbox">
+    <input type="checkbox" id="anim-checkbox" checked>
     <span>Chci vidět animaci tisku</span>
   </label>
   <button class="print-btn" id="print-btn" onclick="startPrint()">🖨️ TISKNOUT!</button>
@@ -647,7 +721,13 @@ header p {
 
   <!-- PRINTER -->
   <div class="card printer-card">
-    <div class="card-title">🧅 Tiskárna v dílně</div>
+    <div class="card-title" style="justify-content:space-between;">
+      <span>🧅 Tiskárna v dílně</span>
+<div style="display:flex;gap:6px;">
+        <button class="stop-btn" id="stop-btn" onclick="stopPrint()" style="display:none">⏹ Zastavit</button>
+        <button class="stop-btn" id="restart-btn" onclick="resumePrint()" style="display:none;background:#f0fdf4;color:var(--g1);border-color:var(--g4);">▶ Znovu spustit</button>
+      </div>
+    </div>
     <div class="printer-scene">
       <div class="printer-box">
         <div class="printer-label">VRSTVIČKA 3000</div>
@@ -686,10 +766,19 @@ header p {
 <div class="result-title" id="result-title"></div>
     <div class="fb-grid" id="fb-grid"></div>
     <div class="reflex-wrap" id="reflex-wrap" style="display:none">
-      <div class="reflex-label">🔍 Co tě překvapilo nebo co sis všiml/a?</div>
-      <textarea class="reflex-input" id="reflex-input" rows="2" placeholder="Napiš své pozorování…"></textarea>
+      <div class="reflex-label">🔍 Jak to dopadlo?</div>
+      <div class="reflex-emojis" id="reflex-emojis">
+        <button class="reflex-emoji-btn" data-val="😮 Překvapilo mě to" onclick="pickReflex(this)">😮 Překvapilo mě to</button>
+        <button class="reflex-emoji-btn" data-val="✅ Stalo se, co jsem čekal/a" onclick="pickReflex(this)">✅ Čekal/a jsem to</button>
+        <button class="reflex-emoji-btn" data-val="🤔 Nevím, co si o tom myslet" onclick="pickReflex(this)">🤔 Nevím</button>
+        <button class="reflex-emoji-btn" data-val="💡 Příště zkusím jinak" onclick="pickReflex(this)">💡 Příště jinak</button>
+      </div>
+      <input type="hidden" id="reflex-input" value="">
     </div>
     <button class="next-btn" id="next-btn" onclick="nextChallenge()" style="display:none">Prozkoumat něco jiného →</button>
+    <div id="denik-hint" style="display:none;margin-top:12px;font-size:.75rem;font-weight:700;color:var(--muted);text-align:center;">
+      📓 Správné řešení Vrstvičky najdeš v <button onclick="showScreen('denik')" style="background:none;border:none;font-family:inherit;font-size:.75rem;font-weight:900;color:var(--g1);cursor:pointer;padding:0;text-decoration:underline;">Badatelském deníku</button>
+    </div>
   </div>
 </div>
 
@@ -1315,6 +1404,44 @@ const MASCOT_S = {
 // ─────────────────────────────────────────────
 // GEMS  (gacha rewards, one per challenge – 5 types cycling)
 // ─────────────────────────────────────────────
+const IDEAL_COMBO = [
+  [
+  ['🟠 TPU', '🍩 Střední', '🐢/🐇 Libovolně', 'TPU je pružný jako guma – hračka je měkká a bezpečná.'],
+  ['🔵 PLA', '🫧 Dutá', '🐢 Pomalu', 'PLA dá nejhladší povrch. Dutá výplň ušetří materiál – pohár nic nenese.'],
+  ['🟢 PETG', '🪨 Plná', '🐢/🐇 Libovolně', 'PETG odolá nárazům. Plná výplň = pevný terč.'],
+  ['🟠 TPU', '🫧 Dutá', '🐢 Pomalu', 'TPU je pružný na prstu. Dutá = lehká loutka.'],
+  ['🟢 PETG', '🪨 Plná', '🐢 Pomalu', 'PETG = pevná kostka, číslice přesné. Pomalý tisk = ostré hrany.']
+  ],
+  [
+  ['🔵 PLA', '🫧 Dutá', '🐢 Pomalu', 'PLA = hezký povrch pro dekoraci. Dutá výplň = lehký, parapet to unese.'],
+  ['🟢 PETG', '🍩 Střední', '🐢/🐇 Libovolně', 'PETG drží tíhu telefonu. Střední výplň = stabilita bez plýtvání.'],
+  ['🟢 PETG', '🪨 Plná', '🐢/🐇 Libovolně', 'PETG = pevný pod klíči. Plná výplň = pevné stěny u šroubu.'],
+  ['🟢 PETG', '🪨 Plná', '🐢/🐇 Libovolně', 'PETG odolá vodě a mýdlu. Plná výplň = bez pórek.'],
+  ['🔵 PLA', '🫧 Dutá', '🐢 Pomalu', 'PLA = hladký svícen. Dutá = lehký a úsporný.']
+  ],
+  [
+  ['🔵 PLA', '🍩 Střední', '🐢 Pomalu', 'PLA = hezký stojánek. Střední výplň = stabilní, nepřepadne.'],
+  ['🟢 PETG', '🪨 Plná', '🐢/🐇 Libovolně', 'PETG odolá chemikáliím. Plná výplň = pevný držák.'],
+  ['🔵 PLA', '🫧 Dutá', '🐢 Pomalu', 'PLA = přesné okraje dílků. Dutá = lehké puzzle.'],
+  ['🟢 PETG', '🪨 Plná', '🐢 Pomalu', 'PETG = tuhé pravítko. Plná výplň = neohýbá se. Pomalý tisk = přesné dílky.'],
+  ['🔵 PLA', '🫧 Dutá', '🐢 Pomalu', 'PLA = hladká dekorace. Dutá = lehká a úsporná.']
+  ],
+  [
+  ['🟢 PETG', '🪨 Plná', '🐢/🐇 Libovolně', 'PETG odolá dešti a mrazu. Plná výplň = pevné stěny krmítka.'],
+  ['🟢 PETG', '🫧 Dutá', '🐢 Pomalu', 'PETG snáší slunce a vlhkost. Dutá = lehká visačka. Pomalu = čitelný text.'],
+  ['🟢 PETG', '🪨 Plná', '🐢/🐇 Libovolně', 'PETG vydrží venku celé roky. Plná výplň = pevná konstrukce hotelu.'],
+  ['🟠 TPU', '🫧 Dutá', '🐢 Pomalu', 'TPU = pružné lístky na hladině. Dutá = leknín plave. Pomalu = jemné detaily.'],
+  ['🟢 PETG', '🪨 Plná', '🐢/🐇 Libovolně', 'PETG odolá vlhkosti. Plná výplň = semínka zůstanou suchá.']
+  ],
+  [
+  ['🟠 TPU', '🍩 Střední', '🐢 Pomalu', 'TPU tlumí nárazy. Střední výplň = rovnováha pružnosti a pevnosti. Pomalu = přesné výřezy.'],
+  ['🟠 TPU', '🍩 Střední', '🐢/🐇 Libovolně', 'TPU = pružný klip. Střední výplň = drží kabel pevně.'],
+  ['🟠 TPU', '🫧 Dutá', '🐢 Pomalu', 'TPU = pohodlný na dotek. Dutá = měkká podložka. Pomalu = hladký povrch.'],
+  ['🟢 PETG', '🪨 Plná', '🐢 Pomalu', 'PETG odolá tření. Plná výplň = pevné zuby. Pomalu = přesný tvar.'],
+  ['🔵 PLA', '🍩 Střední', '🐢 Pomalu', 'PLA = hladký povrch a přesné rozměry. Střední výplň = pevný bez zbytečné váhy.']
+  ]
+];
+
 // Průvodci – zvíře pro každý úkol (viditelné od začátku)
 const ANIMALS = [
   ['🐢','🦊','🦁','🐧','🦋'],  // Hračky a hry
@@ -1368,7 +1495,8 @@ let printing  = false;
 let timer     = null;
 let sel       = {mat:null, infill:null, speed:null};
 let attemptCount = 0;
-let pendingAction = null; // 'fact' | 'world'
+let pendingAction = null;
+let pausedStep = 0; // uložený krok při zastavení // 'fact' | 'world'
 
 // ─────────────────────────────────────────────
 // INIT
@@ -1463,12 +1591,17 @@ function denikSavePokus(feedbackTexts) {
   const key = denikKey();
   if (!denikData[key]) denikData[key] = [];
   const hyp = document.getElementById('hypothesis')?.value?.trim() || '';
+  // Označ předchozí pokusy jako ne-poslední
+  if (denikData[key].length > 0) {
+    denikData[key].forEach(p => p.isLast = false);
+  }
   denikData[key].push({
     mat: sel.mat, infill: sel.infill, speed: sel.speed,
     feedback: feedbackTexts,
     hypothesis: hyp,
     reflex: '',
     worldIdx, chalIdx,
+    isLast: true,
   });
 }
 
@@ -1571,11 +1704,41 @@ function renderDenik() {
         <td>
           ${p.hypothesis ? '<div class="denik-hyp">💭 ' + escHtml(p.hypothesis) + '</div>' : ''}
           ${p.reflex     ? '<div class="denik-reflex">🔍 ' + escHtml(p.reflex) + '</div>' : ''}
+          ${p.isLast ? buildIdealBadgeDenik(p.worldIdx, p.chalIdx) : ''}
         </td>
       `;
       tbody.appendChild(tr);
     });
   });
+}
+
+
+function buildIdealBadgeDenik(wi, ci) {
+  const ideal = IDEAL_COMBO[wi]?.[ci];
+  if (!ideal) return '';
+  const uid = 'ideal-' + wi + '-' + ci;
+  return `<div style="margin-top:10px;">
+    <button class="reveal-btn" onclick="revealIdeal('${uid}')">🧅 Odkrýt řešení Vrstvičky</button>
+    <div id="${uid}" class="ideal-badge" style="display:none;margin-top:8px;">
+      <div class="ideal-badge-icon" style="font-size:1.2rem;">🧅</div>
+      <div class="ideal-badge-body">
+        <div class="ideal-badge-label">Vrstvička doporučuje</div>
+        <div class="ideal-badge-rows">
+          <div class="ideal-badge-row" style="font-size:.74rem;">🧱 ${ideal[0]}</div>
+          <div class="ideal-badge-row" style="font-size:.74rem;">💪 ${ideal[1]}</div>
+          <div class="ideal-badge-row" style="font-size:.74rem;">⚡ ${ideal[2]}</div>
+        </div>
+        <div class="ideal-badge-why" style="font-size:.68rem;">${ideal[3]}</div>
+      </div>
+    </div>
+  </div>`;
+}
+
+function revealIdeal(uid) {
+  const el = document.getElementById(uid);
+  if (!el) return;
+  el.style.display = 'flex';
+  el.previousElementSibling.style.display = 'none';
 }
 
 function escHtml(s) {
@@ -1634,6 +1797,19 @@ function buildPicker() {
   });
 }
 
+
+function pickHyp(btn) {
+  document.querySelectorAll('.hyp-chip').forEach(b => b.classList.remove('sel'));
+  btn.classList.add('sel');
+  document.getElementById('hypothesis').value = btn.dataset.val;
+}
+
+function pickReflex(btn) {
+  document.querySelectorAll('.reflex-emoji-btn').forEach(b => b.classList.remove('sel'));
+  btn.classList.add('sel');
+  document.getElementById('reflex-input').value = btn.dataset.val;
+}
+
 function pickChallenge(wi, ci) {
   worldIdx = wi;
   chalIdx  = ci;
@@ -1682,8 +1858,11 @@ function loadChallenge() {
   pb.textContent = '🖨️ TISKNOUT!';
   pb.onclick = startPrint;
   document.getElementById('next-btn').style.display = 'none';
+  const denikHint = document.getElementById('denik-hint');
+  if (denikHint) denikHint.style.display = 'none';
   const hypEl = document.getElementById('hypothesis');
   if (hypEl) hypEl.value = '';
+  document.querySelectorAll('.hyp-chip').forEach(b => b.classList.remove('sel'));
   resetPrinter();
   setMascot('idle');
   // Průvodce: Vrstvička s badatelskou otázkou
@@ -1942,6 +2121,8 @@ function showHum(missing) {
   const rw = document.getElementById('reflex-wrap');
   if (rw) rw.style.display = 'none';
   document.getElementById('next-btn').style.display = 'none';
+  const denikHint = document.getElementById('denik-hint');
+  if (denikHint) denikHint.style.display = 'none';
 
   rc.style.display = 'block';
   rc.classList.add('show');
@@ -1995,8 +2176,73 @@ function showEmptyPrint() {
   setTimeout(() => rc.scrollIntoView({behavior:'smooth', block:'nearest'}), 80);
 }
 
+function stopPrint() {
+  if (!printing) return;
+  clearInterval(timer);
+  printing = false;
+  document.getElementById('stop-btn').style.display = 'none';
+  document.getElementById('restart-btn').style.display = 'inline-block';
+  document.getElementById('p-drip').classList.remove('on');
+  document.getElementById('settings-card').classList.remove('settings-locked');
+  // Resetuj print-btn do výchozího stavu
+  const pb = document.getElementById('print-btn');
+  pb.textContent = '🖨️ TISKNOUT!';
+  pb.disabled = false;
+  pb.classList.remove('ready');
+  pb.onclick = startPrint;
+  setMascot('thinking');
+}
+
+function resumePrint() {
+  // Pokračuj od místa kde byl tisk zastaven
+  document.getElementById('restart-btn').style.display = 'none';
+  document.getElementById('stop-btn').style.display = 'inline-block';
+  document.getElementById('p-drip').classList.add('on');
+  const pb = document.getElementById('print-btn');
+  pb.textContent = '⏳ Tisknu...';
+  pb.disabled = true;
+  document.getElementById('settings-card').classList.add('settings-locked');
+  setMascot('printing');
+
+  const revRect = document.getElementById('reveal-rect');
+  const noz     = document.getElementById('p-nozzle');
+  const drip    = document.getElementById('p-drip');
+  const fill    = document.getElementById('prog-fill');
+  const pct     = document.getElementById('prog-pct');
+  const steps   = 100;
+  const interval = sel.speed === 'slow' ? 180 : 70;
+
+  printing = true;
+  timer = setInterval(() => {
+    pausedStep++;
+    const p = pausedStep / steps;
+    const h = Math.round(p * 100);
+    revRect.setAttribute('y', String(100 - h));
+    revRect.setAttribute('height', String(h));
+    noz.style.top = Math.max(4, 105 - h) + 'px';
+    fill.style.width = Math.round(p * 100) + '%';
+    pct.textContent  = Math.round(p * 100) + ' %';
+    if (pausedStep >= steps) {
+      clearInterval(timer);
+      drip.classList.remove('on');
+      printing = false;
+      pausedStep = 0;
+      document.getElementById('stop-btn').style.display = 'none';
+      document.getElementById('restart-btn').style.display = 'none';
+      pausedStep = 0;
+      document.getElementById('settings-card').classList.remove('settings-locked');
+      showResult();
+    }
+  }, interval);
+}
+
 function startPrint() {
-  if (printing) return;
+  // Pokud tisk běží nebo je zastaven, resetuj ho nejdřív
+  if (printing) { clearInterval(timer); printing = false; }
+  pausedStep = 0; // nový pokus
+  document.getElementById('stop-btn').style.display = 'none';
+  document.getElementById('restart-btn').style.display = 'none';
+  resetPrinter();
 
   // Zkontroluj zda jsou všechna nastavení zvolena
   const missingSettings = !sel.mat || !sel.infill || !sel.speed;
@@ -2024,6 +2270,8 @@ function startPrint() {
 
   pb.textContent = '⏳ Tisknu...';
   setMascot('printing');
+  document.getElementById('stop-btn').style.display = 'inline-block';
+  document.getElementById('restart-btn').style.display = 'none';
   // scroll printer into view
   setTimeout(() => document.querySelector('.printer-card').scrollIntoView({behavior:'smooth', block:'nearest'}), 80);
 
@@ -2041,6 +2289,7 @@ function startPrint() {
   drip.classList.add('on');
 
   const steps = 100; let step = 0;
+  const interval = sel.speed === 'slow' ? 180 : 70;
   timer = setInterval(() => {
     step++;
     const p = step / steps;
@@ -2059,10 +2308,13 @@ function startPrint() {
       clearInterval(timer);
       drip.classList.remove('on');
       printing = false;
+      document.getElementById('stop-btn').style.display = 'none';
+      document.getElementById('restart-btn').style.display = 'none';
+      pausedStep = 0;
       document.getElementById('settings-card').classList.remove('settings-locked');
       showResult();
     }
-  }, 120);
+  }, interval);
 }
 
 // ─────────────────────────────────────────────
@@ -2132,6 +2384,7 @@ function showResult() {
   const rw = document.getElementById('reflex-wrap');
   const ri = document.getElementById('reflex-input');
   if (rw) { rw.style.display = 'block'; if (ri) ri.value = ''; }
+  document.querySelectorAll('.reflex-emoji-btn').forEach(b => b.classList.remove('sel'));
 
   const rc = document.getElementById('result-card');
   rc.style.display = 'block';
