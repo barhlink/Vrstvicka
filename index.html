@@ -963,7 +963,103 @@ function StepHeader({ step }) {
   );
 }
 
-function PickerScreen({ onPick, onBack }) {
+function DidYouKnow({ entries }) {
+  const [idx, setIdx] = useState(0);
+
+  // Collect unique unlocked tips from diary entries (preserve discovery order, newest first)
+  const unlocked = [];
+  const seen = new Set();
+  [...entries].forEach(e => {
+    const tip = TIPS[e.item.id];
+    if (tip && !seen.has(e.item.id)) {
+      seen.add(e.item.id);
+      unlocked.push({ tip, item: e.item });
+    }
+  });
+
+  const total = unlocked.length;
+  const safeIdx = total > 0 ? idx % total : 0;
+  const current = unlocked[safeIdx];
+
+  const prev = () => setIdx(i => (i - 1 + total) % total);
+  const next = () => setIdx(i => (i + 1) % total);
+
+  return (
+    <div style={{ marginTop: 52 }}>
+      <div style={{ display:'flex', alignItems:'center', gap: 12, marginBottom: 18 }}>
+        <span className="chip chip--amber">✦ Víš, že…</span>
+        {total > 0 && (
+          <span style={{ fontFamily:'var(--mono)', fontSize: 11, color:'var(--ink-3)', letterSpacing:'.04em' }}>
+            {total} odemčeno z {Object.keys(TIPS).length}
+          </span>
+        )}
+      </div>
+
+      {total === 0 ? (
+        <div className="card fade-up" style={{ padding: 32, display:'flex', gap: 24, alignItems:'center', background:'var(--paper)' }}>
+          <div style={{ fontSize: 48, flexShrink: 0 }}>🔒</div>
+          <div>
+            <div style={{ fontFamily:'var(--display)', fontWeight: 600, fontSize: 20, color:'var(--ink)' }}>
+              Zatím žádné zajímavosti
+            </div>
+            <p style={{ color:'var(--ink-2)', marginTop: 6, fontSize: 15 }}>
+              Prozkoumej první předmět a odemkneš první zajímavost o 3D tisku.
+            </p>
+          </div>
+        </div>
+      ) : (
+        <div className="card fade-up" style={{ padding: 28, position:'relative', overflow:'hidden' }}>
+          <div style={{
+            position:'absolute', inset:0,
+            background:'radial-gradient(500px 300px at 90% 110%, var(--amber-soft), transparent 60%)',
+            pointerEvents:'none',
+          }} />
+          <div style={{ position:'relative', display:'grid', gridTemplateColumns:'1fr auto', gap: 20, alignItems:'center' }}>
+            <div>
+              <div style={{ display:'flex', alignItems:'center', gap: 10, marginBottom: 12 }}>
+                <div style={{
+                  width: 40, height: 40, borderRadius: 12, background:'var(--bg-soft)',
+                  display:'flex', alignItems:'center', justifyContent:'center', fontSize: 20, flexShrink: 0,
+                }}>{current.item.emoji}</div>
+                <span style={{ fontFamily:'var(--mono)', fontSize: 11, color:'var(--ink-3)', letterSpacing:'.06em', textTransform:'uppercase' }}>
+                  {current.item.name}
+                </span>
+              </div>
+              <p style={{ fontSize: 17, color:'var(--ink)', lineHeight: 1.55, fontWeight: 500 }}>
+                {current.tip}
+              </p>
+            </div>
+            {total > 1 && (
+              <div style={{ display:'flex', flexDirection:'column', alignItems:'center', gap: 8, flexShrink: 0 }}>
+                <button className="btn btn--ghost btn--sm" onClick={prev}
+                        style={{ padding:'8px 12px', fontSize: 18, lineHeight: 1 }}>‹</button>
+                <span style={{ fontFamily:'var(--mono)', fontSize: 11, color:'var(--ink-3)', whiteSpace:'nowrap' }}>
+                  {safeIdx + 1} / {total}
+                </span>
+                <button className="btn btn--ghost btn--sm" onClick={next}
+                        style={{ padding:'8px 12px', fontSize: 18, lineHeight: 1 }}>›</button>
+              </div>
+            )}
+          </div>
+          {total > 1 && (
+            <div style={{ display:'flex', gap: 5, marginTop: 18, justifyContent:'center' }}>
+              {unlocked.map((_, i) => (
+                <button key={i} onClick={() => setIdx(i)}
+                        style={{
+                          width: i === safeIdx ? 20 : 6, height: 6, borderRadius: 999, border: 0, padding: 0, cursor:'pointer',
+                          background: i === safeIdx ? 'var(--amber-ink)' : 'var(--line)',
+                          transition:'width .2s ease, background .2s ease',
+                        }} />
+              ))}
+            </div>
+          )}
+        </div>
+      )}
+    </div>
+  );
+}
+
+function PickerScreen({ onPick, onBack, entries }) {
   const [groupId, setGroupId] = useState(GROUPS[0].id);
   const group = GROUPS.find(g => g.id === groupId);
 
@@ -1000,6 +1096,9 @@ function PickerScreen({ onPick, onBack }) {
           </button>
         ))}
       </div>
+
+      <DidYouKnow entries={entries} />
+
       <div style={{ textAlign:'center', marginTop: 32 }}>
         <button className="btn btn--ghost btn--sm" onClick={onBack}>← Zpět na úvod</button>
       </div>
@@ -1511,7 +1610,7 @@ function App() {
 
       <main className="wrap">
         {route.name === 'home' && <HeroScreen attempts={entries.length} onStart={startExplore} onDiary={() => setRoute({ name: 'diary' })} />}
-        {route.name === 'picker' && <PickerScreen onPick={(g, it) => { setGroup(g); setItem(it); setRoute({ name: 'config' }); }} onBack={() => setRoute({ name: 'home' })} />}
+        {route.name === 'picker' && <PickerScreen onPick={(g, it) => { setGroup(g); setItem(it); setRoute({ name: 'config' }); }} onBack={() => setRoute({ name: 'home' })} entries={entries} />}
         {route.name === 'config' && item && <ConfigScreen item={item} group={group} config={config} setConfig={setConfig} onNext={() => setRoute({ name: 'predict' })} onBack={() => setRoute({ name: 'picker' })} />}
         {route.name === 'predict' && item && <PredictScreen item={item} group={group} config={config} prediction={prediction} setPrediction={setPredict} onNext={() => setRoute({ name: 'print' })} onBack={() => setRoute({ name: 'config' })} />}
         {route.name === 'print' && item && <PrintScreen item={item} group={group} config={config} onDone={() => setRoute({ name: 'result' })} onCancel={() => setRoute({ name: 'config' })} />}
